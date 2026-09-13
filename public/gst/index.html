@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GST Billing Dashboard - Professional Invoice Generator</title>
+    <meta name="description" content="Generate professional GST invoices with instant tax breakdowns, custom margins, live math calculations, and pixel-perfect PDF export.">
+    <!-- Premium Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <!-- FontAwesome for Elegant Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom Style Sheet -->
+    <link rel="stylesheet" href="styles.css">
+    <!-- Client-side High-Fidelity PDF Generation Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" integrity="sha512-GsLlZN/3F2ErC5IfS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+</head>
+<body>
+
+    <section class="login-screen" id="login-screen" aria-labelledby="login-title">
+        <div class="login-visual-panel">
+            <div class="login-brand-mark">G</div>
+            <div class="login-visual-copy">
+                <span class="login-kicker">GST BILLING WORKSPACE</span>
+                <h1>Turn every invoice into a clearer decision.</h1>
+                <p>One focused workspace for products, margins, tax, and polished client-ready billing.</p>
+            </div>
+            <div class="login-visual-footer">
+                <span><i class="fa-solid fa-shield-halved"></i> Private by default</span>
+                <span><i class="fa-solid fa-bolt"></i> Live calculations</span>
+            </div>
+        </div>
+        <div class="login-form-panel">
+            <div class="login-form-wrap">
+                <div class="login-mobile-brand"><span class="brand-logo">G</span><span>GST Billing</span></div>
+                <span class="login-kicker" id="auth-kicker">WELCOME BACK</span>
+                <h2 id="login-title">Sign in to your workspace</h2>
+                <p class="login-subtitle" id="auth-subtitle">Use your account details to continue to the billing dashboard.</p>
+
+                <div class="auth-mode-tabs">
+                    <button type="button" class="auth-mode-tab active" id="btn-show-login">Sign in</button>
+                    <button type="button" class="auth-mode-tab" id="btn-show-signup">Create account</button>
+                </div>
+
+                <form id="login-form" class="login-form">
+                    <div class="form-group">
+                        <label for="login-email">Work email</label>
+                        <div class="login-input-wrap">
+                            <i class="fa-regular fa-envelope"></i>
+                            <input type="email" id="login-email" autocomplete="username" placeholder="you@company.com" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="login-label-row">
+                            <label for="login-password">Password</label>
+                            <button type="button" class="text-button" id="btn-forgot-password">Forgot password?</button>
+                        </div>
+                        <div class="login-input-wrap">
+                            <i class="fa-solid fa-lock"></i>
+                            <input type="password" id="login-password" autocomplete="current-password" placeholder="Enter your password" required>
+                            <button type="button" class="password-toggle" id="btn-toggle-password" aria-label="Show password" title="Show password"><i class="fa-regular fa-eye"></i></button>
+                        </div>
+                    </div>
+                    <label class="remember-row"><input type="checkbox" id="login-remember"><span>Keep me signed in</span></label>
+                    <p class="login-error" id="login-error" role="alert"></p>
+                    <button type="submit" class="login-submit"><span>Continue to dashboard</span><i class="fa-solid fa-arrow-right"></i></button>
+                </form>
+
+                <form id="signup-form" class="login-form auth-form-hidden">
+                    <div class="form-group">
+                        <label for="signup-name">Full name</label>
+                        <div class="login-input-wrap">
+                            <i class="fa-regular fa-user"></i>
+                            <input type="text" id="signup-name" autocomplete="name" placeholder="Your name" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="signup-email">Work email</label>
+                        <div class="login-input-wrap">
+                            <i class="fa-regular fa-envelope"></i>
+                            <input type="email" id="signup-email" autocomplete="email" placeholder="you@company.com" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="signup-password">Create password</label>
+                        <div class="login-input-wrap">
+                            <i class="fa-solid fa-lock"></i>
+                            <input type="password" id="signup-password" autocomplete="new-password" placeholder="At least 8 characters" required>
+                        </div>
+                    </div>
+                    <p class="login-error" id="signup-error" role="alert"></p>
+                    <button type="submit" class="login-submit"><span>Create your account</span><i class="fa-solid fa-arrow-right"></i></button>
+                </form>
+
+                <div class="auth-divider"><span>or continue with</span></div>
+                <div id="google-login-button" class="google-login-button"></div>
+
+                <p class="login-legal">By continuing, you agree to the workspace terms and privacy policy.</p>
+            </div>
+        </div>
+    </section>
+
+    <div class="app-container" id="app-container" hidden>
+        
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div>
+                <div class="brand-section">
+                    <div class="brand-logo">G</div>
+                    <div class="brand-name">GST Billing</div>
+                </div>
+
+                <nav class="sidebar-nav">
+                    <a class="nav-item active" id="nav-dashboard">
+                        <i class="fa-solid fa-chart-line"></i>
+                        <span>Dashboard</span>
+                    </a>
+                    <a class="nav-item" id="btn-open-billing">
+                        <i class="fa-solid fa-file-circle-plus"></i>
+                        <span>Generate New Bill</span>
+                    </a>
+                    <a class="nav-item" id="btn-open-stock">
+                        <i class="fa-solid fa-boxes-stacked"></i>
+                        <span>Stock Inventory</span>
+                    </a>
+                    <a class="nav-item" id="btn-open-sales">
+                        <i class="fa-solid fa-receipt"></i>
+                        <span>Sales History</span>
+                    </a>
+                    <a class="nav-item admin-nav-hidden" id="btn-open-admin">
+                        <i class="fa-solid fa-user-shield"></i>
+                        <span>Admin Panel</span>
+                    </a>
+                    <a class="nav-item" id="btn-open-settings">
+                        <i class="fa-solid fa-building"></i>
+                        <span>Company Profile</span>
+                    </a>
+                    <a class="nav-item" id="btn-reset-data">
+                        <i class="fa-solid fa-trash-arrow-up"></i>
+                        <span>Reset System</span>
+                    </a>
+                </nav>
+            </div>
+
+            <div class="sidebar-footer">
+                <button class="account-card" id="btn-open-profile" aria-label="Open my profile">
+                    <span class="account-avatar" id="account-avatar">A</span>
+                    <span class="account-copy">
+                        <strong id="account-name-display">Admin User</strong>
+                        <small id="account-email-display">admin@gst.com</small>
+                    </span>
+                    <i class="fa-solid fa-ellipsis-vertical account-more"></i>
+                </button>
+                <button class="theme-toggle-btn" id="theme-toggle" aria-label="Toggle dark/light mode">
+                    <i class="fa-solid fa-moon" id="theme-icon"></i>
+                    <span id="theme-text">Dark Mode</span>
+                </button>
+                <button class="logout-btn" id="btn-logout"><i class="fa-solid fa-arrow-right-from-bracket"></i><span>Sign out</span></button>
+            </div>
+        </aside>
+
+        <!-- Main Dashboard Viewport -->
+        <main class="main-content">
+            
+            <!-- Page Header -->
+            <div class="page-header">
+                <div class="page-title">
+                    <h1 id="page-view-title">Sales Dashboard</h1>
+                    <p id="page-view-description">Track invoiced totals, GST collected, discounts, and products sold.</p>
+                </div>
+            </div>
+
+            <!-- Persistent Stock Inventory -->
+            <section class="panel stock-panel view-hidden" id="stock-panel">
+                <div class="panel-title stock-panel-title">
+                    <div>
+                        <i class="fa-solid fa-warehouse" style="color: var(--accent);"></i>
+                        <span>Stock Inventory</span>
+                    </div>
+                    <span class="stock-sync-status" id="stock-sync-status"><i class="fa-solid fa-database"></i> Database connected</span>
+                </div>
+                <form id="stock-form" class="stock-form">
+                    <div class="form-group">
+                        <label for="stock-name">Product Name</label>
+                        <input type="text" id="stock-name" placeholder="e.g. Laptop Pro 14" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="stock-sku">SKU / Code</label>
+                        <input type="text" id="stock-sku" placeholder="Optional code">
+                    </div>
+                    <div class="form-group">
+                        <label for="stock-quantity">Opening Quantity</label>
+                        <input type="number" id="stock-quantity" min="0" step="any" placeholder="0" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="stock-price">Cost Price</label>
+                        <div class="input-wrapper"><span class="input-prefix">₹</span><input type="number" id="stock-price" min="0" step="any" placeholder="0.00" required></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="stock-gst">Default GST (%)</label>
+                        <input type="number" id="stock-gst" min="0" step="any" value="18" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary stock-add-btn"><i class="fa-solid fa-plus"></i> Add Stock</button>
+                </form>
+                <div class="stock-table-wrap">
+                    <table class="data-table stock-table">
+                        <thead><tr><th>Product</th><th>SKU</th><th>Available</th><th>Cost Price</th><th>GST</th><th>Status</th></tr></thead>
+                        <tbody id="stock-table-body"><tr><td colspan="6" class="stock-loading">Loading inventory...</td></tr></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Administrator User Directory -->
+            <section class="panel admin-panel view-hidden" id="admin-panel">
+                <div class="panel-title admin-panel-title">
+                    <div>
+                        <i class="fa-solid fa-user-shield" style="color: var(--primary);"></i>
+                        <span>User Directory</span>
+                    </div>
+                    <span class="admin-user-count" id="admin-user-count">0 accounts</span>
+                </div>
+                <p class="admin-panel-description">Review workspace accounts, roles, sign-in methods, and account creation dates.</p>
+                <div class="stock-table-wrap">
+                    <table class="data-table admin-users-table">
+                        <thead><tr><th>User</th><th>Email</th><th>Role</th><th>Sign-in method</th><th>Created</th><th>Sessions</th></tr></thead>
+                        <tbody id="admin-users-table-body"><tr><td colspan="6" class="stock-loading">Loading users...</td></tr></tbody>
+                    </table>
+                </div>
+                <p class="admin-panel-error" id="admin-panel-error" role="alert"></p>
+            </section>
+
+            <!-- Dashboard Analytics/Metrics -->
+            <div class="stats-grid" id="dashboard-metrics">
+                <div class="stat-card">
+                    <div class="stat-icon blue">
+                        <i class="fa-solid fa-file-invoice-dollar"></i>
+                    </div>
+                    <div class="stat-info">
+                        <span class="stat-label">Invoiced Grand Total</span>
+                        <span class="stat-value" id="stat-grand-total">₹0.00</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon emerald">
+                        <i class="fa-solid fa-percent"></i>
+                    </div>
+                    <div class="stat-info">
+                        <span class="stat-label">GST Tax Collected</span>
+                        <span class="stat-value" id="stat-gst-collected">₹0.00</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon amber">
+                        <i class="fa-solid fa-tags"></i>
+                    </div>
+                    <div class="stat-info">
+                        <span class="stat-label">Total Discounts Given</span>
+                        <span class="stat-value" id="stat-discounts">₹0.00</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon purple">
+                        <i class="fa-solid fa-boxes-stacked"></i>
+                    </div>
+                    <div class="stat-info">
+                        <span class="stat-label">Total Products Invoiced</span>
+                        <span class="stat-value" id="stat-products-count">0</span>
+                    </div>
+                </div>
+            </div>
+
+            <section class="panel sales-history-panel view-hidden" id="sales-history-panel">
+                <div class="panel-title sales-history-title">
+                    <div><i class="fa-solid fa-receipt" style="color: var(--primary);"></i><span>Sales History</span></div>
+                    <span class="sales-sync-status" id="sales-sync-status">Loading saved sales...</span>
+                </div>
+                <div class="stock-table-wrap">
+                    <table class="data-table sales-history-table">
+                        <thead><tr><th>Invoice</th><th>Customer</th><th>Products Sold</th><th>Qty</th><th>GST</th><th>Total</th><th>Date</th></tr></thead>
+                        <tbody id="sales-history-table-body"><tr><td colspan="7" class="stock-loading">Loading sales history...</td></tr></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Workspace Section -->
+            <div class="workspace-grid view-hidden" id="billing-workspace">
+                
+                <!-- Left Column: Settings and Creation Form -->
+                <div class="left-workspace-col" style="display: flex; flex-direction: column; gap: 2rem;">
+                    
+                    <!-- Customer Details Panel -->
+                    <section class="panel">
+                        <div class="panel-title">
+                            <i class="fa-solid fa-user-tie" style="color: var(--primary);"></i>
+                            <span>Invoice Settings & Client Details</span>
+                        </div>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="bill-number">Bill / Invoice Number</label>
+                                <input type="text" id="bill-number" placeholder="INV-2026-001">
+                            </div>
+                            <div class="form-group">
+                                <label for="bill-date">Invoice Date</label>
+                                <input type="date" id="bill-date">
+                            </div>
+                            <div class="form-group full-width">
+                                <label for="client-name">Customer Name</label>
+                                <input type="text" id="client-name" placeholder="John Doe & Co.">
+                            </div>
+                            <div class="form-group">
+                                <label for="client-gst">Customer GSTIN (Optional)</label>
+                                <input type="text" id="client-gst" placeholder="27AAAAA1111A1Z1" style="text-transform: uppercase;">
+                            </div>
+                            <div class="form-group">
+                                <label for="client-phone">Customer Phone</label>
+                                <input type="tel" id="client-phone" placeholder="+91 98765 43210">
+                            </div>
+                            <div class="form-group full-width">
+                                <label for="client-address">Customer Billing Address</label>
+                                <textarea id="client-address" rows="2" placeholder="123 Corporate Park, Sector 62, Mumbai, MH"></textarea>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Add Product Form -->
+                    <section class="panel">
+                        <div class="panel-title">
+                            <i class="fa-solid fa-cart-plus" style="color: var(--accent);"></i>
+                            <span>Add Product to Invoice</span>
+                        </div>
+                        <form id="product-form" onsubmit="return false;">
+                            <div class="form-grid">
+                                <div class="form-group full-width">
+                                    <label for="product-stock-id">Select From Stock</label>
+                                    <select id="product-stock-id" required>
+                                        <option value="">Choose an inventory item</option>
+                                    </select>
+                                </div>
+                                <div class="form-group full-width">
+                                    <label for="product-name">Product / Service Name</label>
+                                    <input type="text" id="product-name" placeholder="Select a stock item" required readonly>
+                                </div>
+                                <div class="form-group">
+                                    <label for="product-qty">Quantity (Qty)</label>
+                                    <input type="number" id="product-qty" min="1" step="any" placeholder="1" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="product-price">Cost Price per Unit</label>
+                                    <div class="input-wrapper">
+                                        <span class="input-prefix">₹</span>
+                                        <input type="number" id="product-price" min="0" step="any" placeholder="Select stock" required readonly>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="product-selling-price">Selling Price per Unit</label>
+                                    <div class="input-wrapper">
+                                        <span class="input-prefix">₹</span>
+                                        <input type="number" id="product-selling-price" min="0" step="any" placeholder="0.00" required>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="product-gst">GST Percentage (%)</label>
+                                    <input type="number" id="product-gst" min="0" step="any" value="18">
+                                </div>
+                                <div class="form-group full-width">
+                                    <label for="product-discount">Discount Percentage (%)</label>
+                                    <input type="number" id="product-discount" min="0" step="any" value="5">
+                                </div>
+                            </div>
+
+                            <!-- Interactive Live Breakdown Display -->
+                            <div style="margin: 1.5rem 0;">
+                                <div class="live-breakdown-card">
+                                    <div class="live-breakdown-title">
+                                        <span><i class="fa-solid fa-calculator"></i> Live Calculations Preview</span>
+                                        <span style="font-weight: 800; font-size: 0.75rem;">Formula Verified</span>
+                                    </div>
+                                    <div class="live-breakdown-grid">
+                                        <div class="live-breakdown-item">
+                                            <span class="live-breakdown-label">Base Amount</span>
+                                            <span class="live-breakdown-val" id="live-base">₹0.00</span>
+                                        </div>
+                                        <div class="live-breakdown-item">
+                                            <span class="live-breakdown-label">Profit Added</span>
+                                            <span class="live-breakdown-val" id="live-profit">₹0.00</span>
+                                        </div>
+                                        <div class="live-breakdown-item">
+                                            <span class="live-breakdown-label">Selling Price</span>
+                                            <span class="live-breakdown-val" id="live-selling">₹0.00</span>
+                                        </div>
+                                        <div class="live-breakdown-item">
+                                            <span class="live-breakdown-label">GST Tax</span>
+                                            <span class="live-breakdown-val" id="live-gst">₹0.00</span>
+                                        </div>
+                                        <div class="live-breakdown-item">
+                                            <span class="live-breakdown-label">Subtotal</span>
+                                            <span class="live-breakdown-val" id="live-subtotal">₹0.00</span>
+                                        </div>
+                                        <div class="live-breakdown-item">
+                                            <span class="live-breakdown-label">Discount</span>
+                                            <span class="live-breakdown-val" id="live-discount">₹0.00</span>
+                                        </div>
+                                        <div class="live-breakdown-total">
+                                            <span>Final Product Total</span>
+                                            <span id="live-final">₹0.00</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="btn-row">
+                                <button type="button" class="btn btn-secondary" id="btn-clear-form">
+                                    <i class="fa-solid fa-rotate-left"></i> Reset Form
+                                </button>
+                                <button type="submit" class="btn btn-primary" id="btn-add-product">
+                                    <i class="fa-solid fa-plus"></i> Add to Invoice
+                                </button>
+                            </div>
+                        </form>
+                    </section>
+
+                    <!-- Added Products List Table -->
+                    <section class="panel">
+                        <div class="panel-title" style="justify-content: space-between;">
+                            <div style="display: flex; align-items: center; gap: 0.75rem;">
+                                <i class="fa-solid fa-list-check" style="color: var(--primary);"></i>
+                                <span>Invoice Products Ledger</span>
+                            </div>
+                            <span id="ledger-count" style="font-size: 0.85rem; font-weight: 600; color: var(--primary); background-color: var(--primary-light); padding: 0.25rem 0.65rem; border-radius: 20px;">0 items</span>
+                        </div>
+                        <div class="table-container">
+                            <table id="products-table">
+                                <thead>
+                                    <tr>
+                                        <th>Product</th>
+                                        <th>Qty</th>
+                                        <th>Cost Base</th>
+                                        <th>Profit</th>
+                                        <th>GST</th>
+                                        <th>Discount</th>
+                                        <th>Final Amount</th>
+                                        <th style="width: 100px; text-align: center;">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="products-table-body">
+                                    <!-- Dynamic rows loaded here -->
+                                </tbody>
+                            </table>
+                            <div id="table-empty-state" class="empty-state">
+                                <i class="fa-solid fa-box-open"></i>
+                                <h3>No products in ledger</h3>
+                                <p>Fill the form above to add calculated products and compute taxes dynamically.</p>
+                            </div>
+                        </div>
+                    </section>
+
+                </div>
+
+                <!-- Right Column: Interactive Digital Invoice Preview -->
+                <div class="right-workspace-col invoice-preview-wrapper">
+                    
+                    <!-- Print & Action Panel -->
+                    <div style="display: flex; gap: 1rem; margin-bottom: 1.25rem; width: 100%;">
+                        <button class="btn btn-primary" id="btn-download-pdf" style="flex: 1; padding: 0.75rem;">
+                            <i class="fa-solid fa-file-pdf"></i> Download PDF Bill
+                        </button>
+                        <button class="btn btn-success" id="btn-create-invoice" style="flex: 1; padding: 0.75rem;">
+                            <i class="fa-solid fa-circle-check"></i> Create Invoice & Deduct Stock
+                        </button>
+                        <button class="btn btn-secondary" id="btn-print-bill" style="flex: 1; padding: 0.75rem;">
+                            <i class="fa-solid fa-print"></i> Print Invoice
+                        </button>
+                    </div>
+
+                    <!-- Digital Invoice Structure -->
+                    <div class="invoice-preview" id="invoice-print-area">
+                        <div class="invoice-ribbon"></div>
+                        
+                        <div>
+                            <!-- Invoice Header Details -->
+                            <div class="invoice-header">
+                                <div class="company-details">
+                                    <h2 id="invoice-company-name">Your Company Ltd.</h2>
+                                    <p id="invoice-company-address">456 Commerce Blvd, Suite 100, Bengaluru, KA - 560001</p>
+                                    <p>GSTIN: <strong id="invoice-company-gst" style="color: #334155;">29ABCDE1234F1Z5</strong></p>
+                                    <p>Phone: <span id="invoice-company-phone">+91 80 4567 8901</span> | Email: <span id="invoice-company-email">billing@company.com</span></p>
+                                </div>
+                                <div class="invoice-badge-container">
+                                    <span class="invoice-badge">Tax Invoice</span>
+                                    <div class="invoice-id">No: <span id="invoice-num-display">INV-2026-001</span></div>
+                                </div>
+                            </div>
+
+                            <!-- Invoice Metadata: Customer Info, Dates -->
+                            <div class="invoice-info-grid">
+                                <div class="client-details">
+                                    <div class="section-label">Billed To</div>
+                                    <h3 id="invoice-client-name-display">John Doe & Co.</h3>
+                                    <p id="invoice-client-address-display" style="white-space: pre-line;">123 Corporate Park, Sector 62, Mumbai, MH</p>
+                                    <p id="invoice-client-phone-row">Phone: <span id="invoice-client-phone-display">+91 98765 43210</span></p>
+                                    <p id="invoice-client-gst-row">GSTIN: <strong id="invoice-client-gst-display" style="color: #334155;">27AAAAA1111A1Z1</strong></p>
+                                </div>
+                                <div class="invoice-meta">
+                                    <div class="section-label">Invoice Details</div>
+                                    <div class="invoice-meta-item">
+                                        <strong>Date of Issue:</strong> <span id="invoice-date-display">2026-05-29</span>
+                                    </div>
+                                    <div class="invoice-meta-item">
+                                        <strong>Place of Supply:</strong> <span id="invoice-supply-place">Maharashtra (MH)</span>
+                                    </div>
+                                    <div class="invoice-meta-item">
+                                        <strong>Status:</strong> <span style="font-weight: 700; color: var(--success);">UNPAID</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Product Ledger Details on Invoice -->
+                            <table class="invoice-items-table">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 5%;">#</th>
+                                        <th style="text-align: left; width: 35%;">Item & Specifications</th>
+                                        <th style="text-align: right; width: 10%;">Qty</th>
+                                        <th style="text-align: right; width: 15%;">Unit Cost</th>
+                                        <th style="text-align: right; width: 15%;">Selling Price</th>
+                                        <th style="text-align: right; width: 10%;">GST %</th>
+                                        <th style="text-align: right; width: 15%;">Amount (INR)</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="invoice-items-tbody">
+                                    <!-- Dynamic product entries row-by-row -->
+                                    <tr>
+                                        <td colspan="7" style="text-align: center; color: #94a3b8; padding: 2rem;">No items added to invoice ledger yet.</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Summary and Totals Box -->
+                        <div>
+                            <div class="invoice-summary-box">
+                                <div class="invoice-totals">
+                                    <div class="invoice-totals-row">
+                                        <span>Total Base (Cost):</span>
+                                        <span id="inv-total-base">₹0.00</span>
+                                    </div>
+                                    <div class="invoice-totals-row">
+                                        <span>Total Profit Added:</span>
+                                        <span id="inv-total-profit">₹0.00</span>
+                                    </div>
+                                    <div class="invoice-totals-row">
+                                        <span>Total Selling Price:</span>
+                                        <span id="inv-total-selling">₹0.00</span>
+                                    </div>
+                                    <div class="invoice-totals-row">
+                                        <span>GST Tax (CGST+SGST):</span>
+                                        <span id="inv-total-gst">₹0.00</span>
+                                    </div>
+                                    <div class="invoice-totals-row">
+                                        <span>Total Subtotal:</span>
+                                        <span id="inv-subtotal">₹0.00</span>
+                                    </div>
+                                    <div class="invoice-totals-row">
+                                        <span>Total Discount:</span>
+                                        <span id="inv-total-discount">₹0.00</span>
+                                    </div>
+                                    <div class="invoice-totals-row grand-total">
+                                        <span>Grand Total:</span>
+                                        <span id="inv-grand-total">₹0.00</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Terms, Notes and Signature -->
+                            <div class="invoice-footer">
+                                <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-top: 1.5rem; text-align: left;">
+                                    <div style="max-width: 60%;">
+                                        <h4 style="font-weight: 700; color: #334155; margin-bottom: 0.25rem; font-size: 0.8rem;">Terms & Conditions</h4>
+                                        <p style="font-size: 0.7rem; color: #94a3b8; line-height: 1.4;">
+                                            1. Payment should be made within 15 days of invoice date.<br>
+                                            2. Goods once sold will not be taken back or exchanged.<br>
+                                            3. All disputes are subject to Mumbai Jurisdiction.
+                                        </p>
+                                    </div>
+                                    <div style="text-align: right;">
+                                        <div style="width: 140px; border-bottom: 1px solid #cbd5e1; margin-bottom: 0.5rem; height: 40px; display: inline-block;"></div>
+                                        <p style="font-size: 0.75rem; font-weight: 700; color: #334155;">Authorized Signature</p>
+                                        <p style="font-size: 0.65rem; color: #94a3b8;" id="signature-company-name">For Your Company Ltd.</p>
+                                    </div>
+                                </div>
+                                <div style="margin-top: 2rem; border-top: 1px solid #f1f5f9; padding-top: 1rem; font-size: 0.75rem;">
+                                    Thank you for your business!
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </main>
+        
+    </div>
+
+    <!-- Company Settings Modal -->
+    <div class="modal" id="settings-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-sliders" style="color: var(--primary); margin-right: 0.5rem;"></i> Edit Company Profile</h3>
+                <button class="close-btn" id="btn-close-modal">&times;</button>
+            </div>
+            <form id="company-profile-form" onsubmit="return false;">
+                <div class="form-grid">
+                    <div class="form-group full-width">
+                        <label for="company-name">Company Name</label>
+                        <input type="text" id="company-name" value="Your Company Ltd." required>
+                    </div>
+                    <div class="form-group">
+                        <label for="company-gst">Company GSTIN</label>
+                        <input type="text" id="company-gst" value="29ABCDE1234F1Z5" style="text-transform: uppercase;" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="company-phone">Company Phone</label>
+                        <input type="tel" id="company-phone" value="+91 80 4567 8901" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="company-email">Company Email</label>
+                        <input type="email" id="company-email" value="billing@company.com" required>
+                    </div>
+                    <div class="form-group full-width">
+                        <label for="company-address">Company Address</label>
+                        <textarea id="company-address" rows="3" required>456 Commerce Blvd, Suite 100, Bengaluru, KA - 560001</textarea>
+                    </div>
+                </div>
+                <div class="btn-row" style="margin-top: 1.5rem;">
+                    <button type="button" class="btn btn-secondary" id="btn-cancel-settings">Cancel</button>
+                    <button type="submit" class="btn btn-primary" id="btn-save-settings">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Account Profile Modal -->
+    <div class="modal" id="profile-modal">
+        <div class="modal-content profile-modal-content">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-user-gear" style="color: var(--primary); margin-right: 0.5rem;"></i> My Profile</h3>
+                <button class="close-btn" id="btn-close-profile" aria-label="Close profile">&times;</button>
+            </div>
+            <div class="profile-hero">
+                <span class="profile-avatar-large" id="profile-avatar">A</span>
+                <div>
+                    <strong id="profile-name-heading">Admin User</strong>
+                    <span>Workspace administrator</span>
+                </div>
+            </div>
+            <form id="account-profile-form" onsubmit="return false;">
+                <div class="form-grid">
+                    <div class="form-group full-width">
+                        <label for="account-name">Display Name</label>
+                        <input type="text" id="account-name" value="Admin User" required>
+                    </div>
+                    <div class="form-group full-width">
+                        <label for="account-email">Email Address</label>
+                        <input type="email" id="account-email" value="admin@gst.com" required>
+                    </div>
+                    <div class="form-group full-width">
+                        <label>Account Role</label>
+                        <div class="profile-role"><i class="fa-solid fa-shield-halved"></i><span>Administrator</span><small>Full workspace access</small></div>
+                    </div>
+                </div>
+                <div class="btn-row" style="margin-top: 1.5rem;">
+                    <button type="button" class="btn btn-secondary" id="btn-cancel-profile">Cancel</button>
+                    <button type="submit" class="btn btn-primary" id="btn-save-profile">Save Profile</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Reset Password Modal -->
+    <div class="modal" id="reset-password-modal">
+        <div class="modal-content reset-password-content">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-lock" style="color: var(--danger); margin-right: 0.5rem;"></i> Confirm System Reset</h3>
+                <button class="close-btn" id="btn-close-reset-password" aria-label="Close reset confirmation">&times;</button>
+            </div>
+            <p class="reset-password-copy">Enter your account password to unlock this destructive action. All local invoice settings and draft data will be erased.</p>
+            <form id="reset-password-form" onsubmit="return false;">
+                <div class="form-group">
+                    <label for="reset-password">Account Password</label>
+                    <input type="password" id="reset-password" autocomplete="current-password" placeholder="Enter your password" required>
+                </div>
+                <p class="login-error" id="reset-password-error" role="alert"></p>
+                <div class="btn-row" style="margin-top: 1.5rem;">
+                    <button type="button" class="btn btn-secondary" id="btn-cancel-reset-password">Cancel</button>
+                    <button type="submit" class="btn btn-danger" id="btn-confirm-reset"><i class="fa-solid fa-trash"></i> Verify & Reset</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Inject Custom Business Logic -->
+    <script src="app.js"></script>
+</body>
+</html>

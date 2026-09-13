@@ -1,0 +1,20 @@
+html,
+body {
+  min-height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  overflow-x: hidden;
+}
+
+.next-load-error {
+  display: grid;
+  min-height: 100vh;
+  place-items: center;
+  padding: 2rem;
+  color: #b42318;
+  background: #fff7f5;
+  font-family: Arial, sans-serif;
+}

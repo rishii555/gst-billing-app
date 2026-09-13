@@ -1,0 +1,69 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           Int       @id @default(autoincrement())
+  name         String
+  email        String    @unique
+  role         String    @default("USER")
+  passwordHash String?
+  googleId     String?   @unique
+  createdAt    DateTime  @default(now())
+  sessions     Session[]
+  invoices     Invoice[]
+}
+
+model Session {
+  id        Int      @id @default(autoincrement())
+  token     String   @unique
+  userId    Int
+  expiresAt DateTime
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+}
+
+model StockItem {
+  id          Int           @id @default(autoincrement())
+  name        String
+  sku         String?       @unique
+  unitPrice   Float
+  quantity    Float         @default(0)
+  gstPercent  Float         @default(18)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  invoiceLines InvoiceLine[]
+}
+
+model Invoice {
+  id            Int           @id @default(autoincrement())
+  number        String        @unique
+  customerName  String
+  subtotal      Float
+  gstAmount     Float
+  discountAmount Float
+  total         Float
+  createdById   Int
+  createdAt     DateTime      @default(now())
+  items         InvoiceLine[]
+  createdBy     User          @relation(fields: [createdById], references: [id])
+}
+
+model InvoiceLine {
+  id               Int       @id @default(autoincrement())
+  invoiceId        Int
+  stockItemId      Int
+  name             String
+  quantity         Float
+  unitPrice        Float
+  gstPercent       Float
+  discountPercent  Float
+  total            Float
+  invoice          Invoice   @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+  stockItem        StockItem @relation(fields: [stockItemId], references: [id])
+}

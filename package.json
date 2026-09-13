@@ -1,0 +1,27 @@
+{
+  "name": "gst-billing-app",
+  "version": "1.0.0",
+  "description": "Premium GST Billing Web Application featuring automated tax calculations and client-side PDF downloads.",
+  "scripts": {
+    "dev": "next dev",
+    "build": "prisma generate && next build",
+    "start": "next start",
+    "lint": "eslint",
+    "db:migrate": "prisma migrate dev",
+    "db:deploy": "prisma migrate deploy",
+    "db:studio": "prisma studio"
+  },
+  "dependencies": {
+    "@prisma/client": "^6.19.0",
+    "bcryptjs": "^3.0.3",
+    "google-auth-library": "^11.0.2",
+    "next": "16.3.1",
+    "react": "19.2.8",
+    "react-dom": "19.2.8"
+  },
+  "devDependencies": {
+    "eslint": "^9",
+    "eslint-config-next": "16.3.1",
+    "prisma": "^6.19.0"
+  }
+}
